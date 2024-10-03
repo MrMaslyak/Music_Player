@@ -1,0 +1,88 @@
+.first-anchor {
+  -fx-background-color: linear-gradient(to bottom, #4c2c91, #f5a623);
+}
+
+.second-anchor {
+  -fx-background-color: rgba(0, 0, 0, 0.5);
+  -fx-background-radius: 70;
+}
+
+.button {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-padding: 10;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 5, 0, 0, 1);
+  -fx-cursor: hand;
+}
+
+.button:hover {
+  -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+.button:pressed {
+  -fx-background-color: rgba(255, 255, 255, 0.4);
+}
+
+.playIcon {
+  -fx-fit-width: 30;
+  -fx-fit-height: 30;
+  -fx-preserve-ratio: true;
+}
+
+.transparent-panel {
+  -fx-background-color: rgba(0, 0, 0, 0.5);
+  -fx-border-color: transparent;
+  -fx-padding: 20;
+}
+
+.slider {
+    -fx-padding: 5;
+}
+
+.slider .track {
+    -fx-background-color: linear-gradient(to right, rgba(76, 44, 145, 0.8), rgba(245, 166, 35, 0.8));
+    -fx-background-radius: 5;
+    -fx-opacity: 0.7;
+}
+
+.slider .thumb {
+    -fx-background-color: rgba(255, 255, 255, 0.8);
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 5, 0, 0, 1);
+    -fx-padding: 3;
+}
+
+.slider .thumb:hover {
+    -fx-background-color: rgba(255, 255, 255, 1);
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
+
+.slider .thumb:pressed {
+    -fx-background-color: rgba(200, 200, 255, 0.9);
+}
+
+
+.scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .track {
+    -fx-background-color: linear-gradient(to bottom, #4c2c91, #f5a623);
+    -fx-background-radius: 10;
+    -fx-opacity: 0.5;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: linear-gradient(to bottom, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 5, 0, 0, 1);
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.8);
+}
+
+.scroll-bar .thumb:pressed {
+    -fx-background-color: rgba(255, 255, 255, 1);
+}
