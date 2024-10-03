@@ -42,24 +42,24 @@ public class HelloController implements ChangeListener<Number> {
     private double countUser = 0, volume = 10;
 
     public void initialize() {
-
         fileListView.setCellFactory(listView -> new MusicCell(fileListView));
-
-        fileListView.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
-                isPlaying = false;
-                String selectedFileName = fileListView.getSelectionModel().getSelectedItem();
-                slider.valueProperty().addListener(this);
-                slider.valueProperty().setValue(0);
-                countUser = 0;
-                isPlaying = true;
-                thread = new Thread(slider);
-                if (selectedFileName != null) {
-                    playSelectedFile();
-                }
-            }
-        });
     }
+
+    public void start() {
+
+        if (!fileListView.getItems().isEmpty()) {
+            String selectedFile = fileListView.getItems().get(0);
+            slider.valueProperty().addListener(this);
+            slider.valueProperty().setValue(0);
+            countUser = 0;
+            isPlaying = true;
+            thread = new Thread(slider);
+            playSelectedFile(selectedFile);
+        } else {
+            statusLabel.setText("Список треков пуст.");
+        }
+    }
+
 
         public void addMusic() {
         FileChooser fileChooser = new FileChooser();
@@ -120,13 +120,13 @@ public class HelloController implements ChangeListener<Number> {
 
     }
 
-    private void playSelectedFile() {
-        String selectedFileName = fileListView.getSelectionModel().getSelectedItem();
+    private void playSelectedFile(String selectedFileName) {
         if (selectedFileName != null) {
-
+            String[] separationAuthorName = selectedFileName.split(" - ");
+            author = separationAuthorName[0].trim();
+            title = separationAuthorName[1].trim();
 
             stopCurrentTrack();
-
             int musicId = dataBase.getMusicIdByName(title);
             File musicFile = dataBase.getMusicFromDatabase(musicId);
 
@@ -226,7 +226,7 @@ public class HelloController implements ChangeListener<Number> {
         if (currentIndex > 0) {
             fileListView.getSelectionModel().select(currentIndex - 1);
             dataBaseLoad.setMusicId(currentIndex - 1);
-            playSelectedFile();
+            //playSelectedFile();
         }
     }
 
@@ -236,7 +236,7 @@ public class HelloController implements ChangeListener<Number> {
         if (currentIndex < fileListView.getItems().size() - 1) {
             fileListView.getSelectionModel().select(currentIndex + 1);
             dataBaseLoad.setMusicId(currentIndex + 1);
-            playSelectedFile();
+            //playSelectedFile();
         }
     }
 

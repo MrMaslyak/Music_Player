@@ -42,6 +42,8 @@ public class DataBase implements IDB {
         return dataBase;
     }
 
+
+
     @Override
     public void save_music(String author, String name, String duration, File musicFile) {
         String checkQuery = "SELECT COUNT(*) FROM musics WHERE author = ? AND name = ?";
