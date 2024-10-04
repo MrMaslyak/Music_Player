@@ -53,11 +53,11 @@
 
 
         <Label fx:id="statusLabel" disable="true" layoutX="44.0" layoutY="63.0" text="Статус загрузки..." textFill="#d649d2" />
-        <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="8.0" layoutY="98.0" pickOnBounds="true" preserveRatio="true">
+        <ImageView  fx:id="startIcon"  fitHeight="30.0" fitWidth="30.0" layoutX="8.0" layoutY="98.0" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@Img/start_icon.png" />
             </image>
         </ImageView>
-        <Button layoutY="94.0" mnemonicParsing="false" onAction="#start" prefHeight="42.0" prefWidth="44.0" textFill="#e80d0d" />
+        <Button  fx:id="startButton" layoutY="94.0" mnemonicParsing="false" onAction="#start" prefHeight="42.0" prefWidth="44.0" textFill="#e80d0d" />
     </children>
 </AnchorPane>

@@ -3,10 +3,7 @@ package org.example.demo1;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollBar;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
@@ -21,7 +18,8 @@ import org.example.demo1.Treads.Thread;
 import java.io.File;
 
 public class HelloController implements ChangeListener<Number> {
-
+    @FXML
+    private Button startButton;
     @FXML
     private Label statusLabel;
     @FXML
@@ -29,15 +27,14 @@ public class HelloController implements ChangeListener<Number> {
     @FXML
     private Slider slider;
     @FXML
-    private ImageView playIcon;
+    private ImageView playIcon, startIcon;
     @FXML
     private ScrollBar scrollbarVolume;
     private MediaPlayer mediaPlayer;
-    private File currentFile;
     private IDB dataBase = DataBase.getInstance();
     private DataBase dataBaseLoad = DataBase.getInstance();
     private String author, title;
-    private boolean isPlaying = false;
+    private boolean isPlaying = false, isStart = false, isTrackPlayed = true;
     private Thread thread;
     private double countUser = 0, volume = 10;
 
@@ -46,7 +43,6 @@ public class HelloController implements ChangeListener<Number> {
     }
 
     public void start() {
-
         if (!fileListView.getItems().isEmpty()) {
             String selectedFile = fileListView.getItems().get(0);
             slider.valueProperty().addListener(this);
@@ -55,8 +51,13 @@ public class HelloController implements ChangeListener<Number> {
             isPlaying = true;
             thread = new Thread(slider);
             playSelectedFile(selectedFile);
+            isStart  = true;
         } else {
             statusLabel.setText("Список треков пуст.");
+        }
+        if (isStart){
+            startIcon.setImage(new Image(getClass().getResourceAsStream("Img/play_start.png")));
+            startButton.setDisable(true);
         }
     }
 
@@ -154,6 +155,9 @@ public class HelloController implements ChangeListener<Number> {
                     slider.setValue(0);
                     stopCurrentThread();
                     isPlaying = false;
+
+
+
                 });
 
                 mediaPlayer.setOnError(() -> {
@@ -162,6 +166,9 @@ public class HelloController implements ChangeListener<Number> {
             }
         }
     }
+
+
+
 
     private void stopCurrentTrack() {
         if (mediaPlayer != null) {
@@ -222,21 +229,32 @@ public class HelloController implements ChangeListener<Number> {
 
     @FXML
     private void playPreviousTrack() {
-        int currentIndex = fileListView.getSelectionModel().getSelectedIndex();
-        if (currentIndex > 0) {
-            fileListView.getSelectionModel().select(currentIndex - 1);
-            dataBaseLoad.setMusicId(currentIndex - 1);
-            //playSelectedFile();
+        System.out.println("playPreviousTrack");
+        try {
+            int currentIndex = fileListView.getSelectionModel().getSelectedIndex();
+            if (currentIndex < fileListView.getItems().size() + 1) {
+                fileListView.getSelectionModel().select(currentIndex - 1);
+                dataBaseLoad.setMusicId(currentIndex - 1);
+                playSelectedFile(fileListView.getItems().get(currentIndex - 1));
+            } else {
+                statusLabel.setText("Достигнут конец списка треков.");
+            }
+        }catch (RuntimeException ex){
+            statusLabel.setText("Достигнут вверх списка треков.");
         }
+
     }
 
     @FXML
     private void playNextTrack() {
+        System.out.println("playNextTrack");
         int currentIndex = fileListView.getSelectionModel().getSelectedIndex();
         if (currentIndex < fileListView.getItems().size() - 1) {
             fileListView.getSelectionModel().select(currentIndex + 1);
             dataBaseLoad.setMusicId(currentIndex + 1);
-            //playSelectedFile();
+            playSelectedFile(fileListView.getItems().get(currentIndex + 1));
+        } else {
+            statusLabel.setText("Достигнут конец списка треков.");
         }
     }
 
