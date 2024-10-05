@@ -18,7 +18,7 @@ import java.io.File;
 
 
 
-public class HelloController implements ChangeListener<Number> {
+public class HelloController {
     @FXML
     private Button startButton;
     @FXML
@@ -40,26 +40,32 @@ public class HelloController implements ChangeListener<Number> {
     private double countUser = 0, volume = 10;
     private SystemMusic  systemMusic = new SystemMusic();
 
+
     public void initialize() {
         fileListView.setCellFactory(listView -> new MusicCell(fileListView));
+        systemMusic.setSlider(slider);
+        systemMusic.setMediaPlayer(mediaPlayer);
+        systemMusic.setThread(thread);
+        systemMusic.setStatusLabel(statusLabel);
     }
 
     public void start() {
         if (!fileListView.getItems().isEmpty()) {
             String selectedFile = fileListView.getItems().get(0);
-            slider.valueProperty().addListener(this);
+            slider.valueProperty().addListener(systemMusic);
             slider.valueProperty().setValue(0);
             countUser = 0;
             isPlaying = true;
             thread = new Thread(slider);
-            playSelectedFile(selectedFile);
+            systemMusic.playSelectedFile(selectedFile, playIcon, statusLabel, slider);
             isStart  = true;
         } else {
             statusLabel.setText("Список треков пуст.");
         }
-        if (isStart){
+        if (isStart) {
             startIcon.setImage(new Image(getClass().getResourceAsStream("Img/play_start.png")));
             startButton.setDisable(true);
+            playButtonFunc();
         }
     }
 
@@ -70,111 +76,41 @@ public class HelloController implements ChangeListener<Number> {
 
 
 
-    private void playSelectedFile(String selectedFileName) {
-        if (selectedFileName != null) {
-            String[] separationAuthorName = selectedFileName.split(" - ");
-            author = separationAuthorName[0].trim();
-            title = separationAuthorName[1].trim();
-
-            stopCurrentTrack();
-            int musicId = dataBase.getMusicIdByName(title);
-            File musicFile = dataBase.getMusicFromDatabase(musicId);
-
-            if (musicFile != null) {
-                Media media = new Media(musicFile.toURI().toString());
-                mediaPlayer = new MediaPlayer(media);
-
-                mediaPlayer.setOnReady(() -> {
-                    mediaPlayer.play();
-                    statusLabel.setText("Воспроизведение: " + selectedFileName);
-                    playIcon.setImage(new Image(getClass().getResourceAsStream("Img/pause_button.png")));
-                    slider.setMin(0);
-                    slider.setMax(mediaPlayer.getMedia().getDuration().toSeconds());
-
-                    stopCurrentThread();
-                    thread = new org.example.demo1.Treads.Thread(slider);
-                    thread.start();
-                    isPlaying = true;
-                });
-
-                mediaPlayer.setOnEndOfMedia(() -> {
-                    mediaPlayer.seek(Duration.ZERO);
-                    statusLabel.setText("Воспроизведение завершено: " + selectedFileName);
-                    playIcon.setImage(new Image(getClass().getResourceAsStream("Img/play-button.png")));
-                    slider.setValue(0);
-                    stopCurrentThread();
-                    isPlaying = false;
-
-
-
-                });
-
-                mediaPlayer.setOnError(() -> {
-                    statusLabel.setText("Ошибка воспроизведения: " + mediaPlayer.getError().getMessage());
-                });
-            }
-        }
-    }
-
-
-
-
-    private void stopCurrentTrack() {
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.dispose();
-            mediaPlayer = null;
-        }
-        stopCurrentThread();
-    }
-
-    private void stopCurrentThread() {
-        if (thread != null) {
-            thread.setStop(false);
-            thread.interrupt();
-            thread = null;
-        }
-    }
-
 
     public void playButtonFunc() {
-        if (mediaPlayer == null) return;
+        MediaPlayer mediaPlayer = systemMusic.getMediaPlayer();
+        String title = systemMusic.getTitle();
+        if (mediaPlayer == null) {
+            statusLabel.setText("Ошибка: Плеер не инициализирован.");
+            return;
+        }
         if (mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
-            mediaPlayer.pause();
-            playIcon.setImage(new Image(getClass().getResourceAsStream("Img/play-button.png")));
-            isPlaying = false;
             thread.setStop(false);
+            mediaPlayer.pause();
             thread.interrupt();
+            playIcon.setImage(new Image(getClass().getResourceAsStream("Img/play-button.png")));
             statusLabel.setText("Пауза: " + title);
+
         } else {
             playIcon.setImage(new Image(getClass().getResourceAsStream("Img/pause_button.png")));
             isPlaying = true;
+            thread.setStop(true);
             mediaPlayer.play();
-            thread = new Thread(slider, (int) countUser);
-            thread.start();
+            if (thread == null) {
+                thread = new Thread(slider, (int) countUser);
+                thread.start();
+            }
             statusLabel.setText("Воспроизведение: " + title);
         }
     }
+
 
     public void sliderClick() {
         System.out.println("user click");
     }
 
 
-    @Override
-    public void changed(ObservableValue<? extends Number> observableValue, Number number, Number currentSec) {
-        int countSlider = (int) slider.getValue();
-        countUser++;
-        if (countUser + 2 < countSlider || countUser - 2 > countSlider) {
-            countUser = countSlider;
-            mediaPlayer.seek(Duration.seconds(currentSec.doubleValue()));
-            thread.setCount(currentSec.intValue());
-            statusLabel.setText("Воспроизведение: " + title);
 
-
-        }
-
-    }
 
     @FXML
     private void playPreviousTrack() {
@@ -184,7 +120,7 @@ public class HelloController implements ChangeListener<Number> {
             if (currentIndex < fileListView.getItems().size() + 1) {
                 fileListView.getSelectionModel().select(currentIndex - 1);
                 dataBaseLoad.setMusicId(currentIndex - 1);
-                playSelectedFile(fileListView.getItems().get(currentIndex - 1));
+                systemMusic.playSelectedFile(fileListView.getItems().get(currentIndex - 1), playIcon, statusLabel, slider);
             } else {
                 statusLabel.setText("Достигнут конец списка треков.");
             }
@@ -201,13 +137,14 @@ public class HelloController implements ChangeListener<Number> {
         if (currentIndex < fileListView.getItems().size() - 1) {
             fileListView.getSelectionModel().select(currentIndex + 1);
             dataBaseLoad.setMusicId(currentIndex + 1);
-            playSelectedFile(fileListView.getItems().get(currentIndex + 1));
+            systemMusic.playSelectedFile(fileListView.getItems().get(currentIndex + 1), playIcon, statusLabel, slider);
         } else {
             statusLabel.setText("Достигнут конец списка треков.");
         }
     }
 
     public void scrollbarVolume() {
+        MediaPlayer mediaPlayer = systemMusic.getMediaPlayer();
         volume = scrollbarVolume.getValue() / 100.0;
         if (mediaPlayer != null) {
             mediaPlayer.setVolume(volume);
