@@ -14,8 +14,9 @@ import javafx.util.Duration;
 import org.example.demo1.DataBase.DataBase;
 import org.example.demo1.Interface.IDB;
 import org.example.demo1.Treads.Thread;
-
 import java.io.File;
+
+
 
 public class HelloController implements ChangeListener<Number> {
     @FXML
@@ -37,6 +38,7 @@ public class HelloController implements ChangeListener<Number> {
     private boolean isPlaying = false, isStart = false, isTrackPlayed = true;
     private Thread thread;
     private double countUser = 0, volume = 10;
+    private SystemMusic  systemMusic = new SystemMusic();
 
     public void initialize() {
         fileListView.setCellFactory(listView -> new MusicCell(fileListView));
@@ -61,65 +63,12 @@ public class HelloController implements ChangeListener<Number> {
         }
     }
 
-
-        public void addMusic() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Открыть музыкальный файл");
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Музыкальные файлы", "*.mp3", "*.wav", "*.aac", "*.flac")
-        );
-
-        Stage stage = (Stage) statusLabel.getScene().getWindow();
-        File selectedFile = fileChooser.showOpenDialog(stage);
-        Media media = new Media(selectedFile.toURI().toString());
-        MediaPlayer mediaPlayer = new MediaPlayer(media);
-
-        if (selectedFile != null) {
-            System.out.println("Выбран файл: " + selectedFile.getAbsolutePath());
-            statusLabel.setText("Выбран файл: " + selectedFile.getName());
-
-            String fileName = selectedFile.getName();
-            fileName = fileName.substring(0, fileName.lastIndexOf('.'));
-
-            String[] separationAuthorName = fileName.split(" - ");
-
-            if (separationAuthorName.length == 2) {
-                author = separationAuthorName[0].trim();
-                title = separationAuthorName[1].trim();
-                if (fileListView.getItems().contains(author + " - " + title)) {
-                    System.out.println("Такой трек уже есть в списке");
-                    statusLabel.setText("Такой трек уже есть в списке");
-                    return;
-                }
-                System.out.println("Автор: " + author);
-                System.out.println("Название: " + title);
-
-            } else {
-                System.out.println("Ошибка: Имя файла не соответствует ожидаемому формату 'Author - Title'");
-                statusLabel.setText("Ошибка: Неверный формат имени файла");
-            }
-        } else {
-            System.out.println("Файл не выбран");
-            statusLabel.setText("Файл не выбран");
-        }
-
-
-        mediaPlayer.setOnReady(() -> {
-            Duration duration = mediaPlayer.getMedia().getDuration();
-            double seconds = duration.toSeconds();
-
-            long minutes = (long) seconds / 60;
-            long secs = (long) seconds % 60;
-            String formattedDuration = String.format("%d:%02d", minutes, secs);
-
-            System.out.println("Длительность трека: " + formattedDuration + " минут");
-
-            dataBase.save_music(author, title, formattedDuration, selectedFile);
-            fileListView.getItems().add(author + " - " + title);
-
-        });
-
+    public void addMusic(){
+        systemMusic.addMusic(statusLabel, fileListView, author, title);
     }
+
+
+
 
     private void playSelectedFile(String selectedFileName) {
         if (selectedFileName != null) {
