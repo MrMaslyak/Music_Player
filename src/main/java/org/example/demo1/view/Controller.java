@@ -1,16 +1,17 @@
-package org.example.demo1;
+package org.example.demo1.view;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.control.ScrollBar;
-import org.example.demo1.DataBase.DataBase;
-import org.example.demo1.Interface.IDB;
-import org.example.demo1.Treads.Thread;
+import org.example.demo1.database.DataBase;
+import org.example.demo1.database.repository.IDB;
+import org.example.demo1.model.MusicCell;
+import org.example.demo1.services.System;
+import org.example.demo1.treads.Thread;
 
-public class HelloController {
+public class Controller {
 
 
     @FXML
@@ -62,7 +63,8 @@ public class HelloController {
         }
 
         if (isStart) {
-            startIcon.setImage(new Image(getClass().getResourceAsStream("Img/play_start.png")));
+            startIcon.setImage(new Image(getClass().getResourceAsStream("/org/example/demo1/Img/play_start.png")));
+
             startButton.setDisable(true);
             playButtonFunc();
         }
@@ -87,17 +89,6 @@ public class HelloController {
     public void scrollbarVolume(){
         panel.scrollbarVolume(system);
     }
-
-
-
-
-
-
-
-
-
-
-
 }
 
 

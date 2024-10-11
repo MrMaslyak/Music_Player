@@ -1,4 +1,4 @@
-package org.example.demo1;
+package org.example.demo1.model;
 
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -8,8 +8,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
-import org.example.demo1.DataBase.DataBase;
-import org.example.demo1.Interface.IDB;
+import org.example.demo1.database.DataBase;
+import org.example.demo1.database.repository.IDB;
 
 
 public class MusicCell extends ListCell<String> {
@@ -23,9 +23,10 @@ public class MusicCell extends ListCell<String> {
     public MusicCell(ListView<String> listView) {
         super();
         musicName = new Text();
-        deleteIcon = new ImageView(new Image(getClass().getResourceAsStream("Img/delete_icon.png")));
 
 
+        deleteIcon = new ImageView();
+        deleteIcon.setImage(new Image(getClass().getResourceAsStream("/org/example/demo1/Img/delete_icon.png")));
 
         deleteIcon.setFitHeight(17);
         deleteIcon.setFitWidth(17);
@@ -35,7 +36,6 @@ public class MusicCell extends ListCell<String> {
             int musicId = dataBase.getMusicIdByName(selectedItem.split(" - ")[1]);
             dataBase.delete(musicId);
         });
-
 
         content = new HBox(musicName, spacer, deleteIcon);
         HBox.setHgrow(spacer, Priority.ALWAYS);

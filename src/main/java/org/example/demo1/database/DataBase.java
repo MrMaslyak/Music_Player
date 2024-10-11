@@ -1,7 +1,6 @@
-package org.example.demo1.DataBase;
+package org.example.demo1.database;
 
-import org.example.demo1.HelloController;
-import org.example.demo1.Interface.IDB;
+import org.example.demo1.database.repository.IDB;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,7 +10,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 
 public class DataBase implements IDB {
 

@@ -1,4 +1,4 @@
-package org.example.demo1;
+package org.example.demo1.view;
 
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -7,8 +7,11 @@ import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.media.MediaPlayer;
-import org.example.demo1.DataBase.DataBase;
-import org.example.demo1.Treads.Thread;
+import org.example.demo1.database.DataBase;
+import org.example.demo1.services.System;
+import org.example.demo1.treads.Thread;
+
+import java.io.InputStream;
 
 
 public class Panel {
@@ -48,12 +51,13 @@ public class Panel {
             thread.start();
 
             mediaPlayer.pause();
-            playIcon.setImage(new Image(getClass().getResourceAsStream("Img/play-button.png")));
+            playIcon.setImage(new Image(getClass().getResourceAsStream("/org/example/demo1/Img/play-button.png")));
+
             statusLabel.setText("Пауза: " + title);
         } else {
             isStop = true;
             mediaPlayer.play();
-            playIcon.setImage(new Image(getClass().getResourceAsStream("Img/pause_button.png")));
+            playIcon.setImage(new Image(getClass().getResourceAsStream("/org/example/demo1/Img/pause_button.png")));
             statusLabel.setText("Воспроизведение: " + title);
         }
     }

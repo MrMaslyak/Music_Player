@@ -1,8 +1,7 @@
-package org.example.demo1.Treads;
+package org.example.demo1.treads;
 
 import javafx.application.Platform;
 import javafx.scene.control.Slider;
-import org.example.demo1.HelloController;
 
 public class Thread extends java.lang.Thread {
     private Slider slider;
@@ -27,7 +26,7 @@ public class Thread extends java.lang.Thread {
                 Platform.runLater(() -> slider.setValue(count++));
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                System.out.println("Thread interrupted.");
+                java.lang.System.out.println("Thread interrupted.");
                 isStop = false;
                 break;
             }

@@ -1,4 +1,4 @@
-package org.example.demo1;
+package org.example.demo1.services;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -10,11 +10,12 @@ import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import org.example.demo1.DataBase.DataBase;
-import org.example.demo1.Interface.IDB;
-import org.example.demo1.Treads.Thread;
+import org.example.demo1.database.DataBase;
+import org.example.demo1.database.repository.IDB;
+import org.example.demo1.treads.Thread;
 
 import java.io.File;
+import java.util.Objects;
 
 public class System implements ChangeListener<Number> {
 
@@ -135,7 +136,7 @@ public class System implements ChangeListener<Number> {
         }
     }
 
-    void playSelectedFile(String selectedFileName, ImageView playIcon, Label statusLabel, Slider slider) {
+    public void playSelectedFile(String selectedFileName, ImageView playIcon, Label statusLabel, Slider slider) {
         if (selectedFileName != null) {
             String[] separationAuthorName = selectedFileName.split(" - ");
             author = separationAuthorName[0].trim();
@@ -154,7 +155,12 @@ public class System implements ChangeListener<Number> {
                 mediaPlayer.setOnReady(() -> {
                     mediaPlayer.play();
                     statusLabel.setText("Воспроизведение: " + selectedFileName);
-                    playIcon.setImage(new Image(getClass().getResourceAsStream("Img/pause_button.png")));
+                    try {
+                        playIcon.setImage(new Image(getClass().getResourceAsStream("/org/example/demo1/Img/pause_button.png")));
+                    }catch (NullPointerException e){
+                        java.lang.System.out.println(" Input stream must not be null");
+                    }
+
                     slider.setMin(0);
                     slider.setMax(mediaPlayer.getMedia().getDuration().toSeconds());
 
@@ -167,7 +173,7 @@ public class System implements ChangeListener<Number> {
                 mediaPlayer.setOnEndOfMedia(() -> {
                     mediaPlayer.seek(Duration.ZERO);
                     statusLabel.setText("Воспроизведение завершено: " + selectedFileName);
-                    playIcon.setImage(new Image(getClass().getResourceAsStream("Img/play-button.png")));
+                    playIcon.setImage(new Image(getClass().getResourceAsStream("/org/example/demo1/Img/play-button.png")));
                     slider.setValue(0);
                     stopCurrentThread();
                 });
@@ -179,7 +185,7 @@ public class System implements ChangeListener<Number> {
         }
     }
 
-    void stopCurrentTrack() {
+    public void stopCurrentTrack() {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
             mediaPlayer.dispose();

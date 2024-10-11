@@ -1,7 +1,6 @@
-package org.example.demo1.Interface;
+package org.example.demo1.database.repository;
 
 import java.io.File;
-import java.util.ArrayList;
 
 public interface IDB {
     void save_music(String author, String name,  String duration, File musicFile);

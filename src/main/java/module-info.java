@@ -8,11 +8,18 @@ module org.example.demo1 {
     requires java.sql;
 
     opens org.example.demo1 to javafx.fxml;
+
+    exports org.example.demo1.database;
+    opens org.example.demo1.database to javafx.fxml;
+    exports org.example.demo1.database.repository;
+    opens org.example.demo1.database.repository to javafx.fxml;
     exports org.example.demo1;
-    exports org.example.demo1.DataBase;
-    opens org.example.demo1.DataBase to javafx.fxml;
-    exports org.example.demo1.Interface;
-    opens org.example.demo1.Interface to javafx.fxml;
-    exports org.example.demo1.Treads;
-    opens org.example.demo1.Treads to javafx.fxml;
+    exports org.example.demo1.treads;
+    opens org.example.demo1.treads to javafx.fxml;
+    exports org.example.demo1.services;
+    opens org.example.demo1.services to javafx.fxml;
+    exports org.example.demo1.view;
+    opens org.example.demo1.view to javafx.fxml;
+    exports org.example.demo1.model;
+    opens org.example.demo1.model to javafx.fxml;
 }
