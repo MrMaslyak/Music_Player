@@ -9,7 +9,7 @@
     <children>
         <AnchorPane layoutY="687.0" prefHeight="49.0" prefWidth="600.0" styleClass="second-anchor">
             <children>
-                <Slider id="slider" fx:id="slider" layoutX="54.0" layoutY="7.0" onMouseClicked="#sliderClick" prefHeight="14.0" prefWidth="510.0" styleClass="slider" AnchorPane.bottomAnchor="35.0" />
+                <Slider id="slider" fx:id="slider" layoutX="54.0" layoutY="7.0"  prefHeight="14.0" prefWidth="510.0" styleClass="slider" AnchorPane.bottomAnchor="35.0" />
                 <ImageView fx:id="playIcon" fitHeight="20.0" fitWidth="20.0" layoutX="290.0" layoutY="27.0" styleClass="playIcon">
                     <image>
                         <Image url="@Img/play-button.png" />

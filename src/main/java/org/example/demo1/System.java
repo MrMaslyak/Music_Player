@@ -16,7 +16,7 @@ import org.example.demo1.Treads.Thread;
 
 import java.io.File;
 
-public class SystemMusic implements ChangeListener<Number> {
+public class System implements ChangeListener<Number> {
 
     private Label statusLabel;
     private ListView<String> fileListView;
@@ -63,7 +63,7 @@ public class SystemMusic implements ChangeListener<Number> {
         File selectedFile = fileChooser.showOpenDialog(stage);
 
         if (selectedFile != null) {
-            System.out.println("Выбран файл: " + selectedFile.getAbsolutePath());
+            java.lang.System.out.println("Выбран файл: " + selectedFile.getAbsolutePath());
             statusLabel.setText("Выбран файл: " + selectedFile.getName());
 
             Media media = new Media(selectedFile.toURI().toString());
@@ -78,14 +78,14 @@ public class SystemMusic implements ChangeListener<Number> {
                 author = separationAuthorName[0].trim();
                 title = separationAuthorName[1].trim();
                 if (fileListView.getItems().contains(author + " - " + title)) {
-                    System.out.println("Такой трек уже есть в списке");
+                    java.lang.System.out.println("Такой трек уже есть в списке");
                     statusLabel.setText("Такой трек уже есть в списке");
                     return;
                 }
-                System.out.println("Автор: " + author);
-                System.out.println("Название: " + title);
+                java.lang.System.out.println("Автор: " + author);
+                java.lang.System.out.println("Название: " + title);
             } else {
-                System.out.println("Ошибка: Имя файла не соответствует ожидаемому формату 'Author - Title'");
+                java.lang.System.out.println("Ошибка: Имя файла не соответствует ожидаемому формату 'Author - Title'");
                 statusLabel.setText("Ошибка: Неверный формат имени файла");
             }
 
@@ -100,13 +100,13 @@ public class SystemMusic implements ChangeListener<Number> {
                 long secs = (long) seconds % 60;
                 String formattedDuration = String.format("%d:%02d", minutes, secs);
 
-                System.out.println("Длительность трека: " + formattedDuration + " минут");
+                java.lang.System.out.println("Длительность трека: " + formattedDuration + " минут");
 
                 dataBase.save_music(finalAuthor, finalTitle, formattedDuration, selectedFile);
                 fileListView.getItems().add(finalAuthor + " - " + finalTitle);
             });
         } else {
-            System.out.println("Файл не выбран");
+            java.lang.System.out.println("Файл не выбран");
             statusLabel.setText("Файл не выбран");
         }
     }
@@ -131,7 +131,7 @@ public class SystemMusic implements ChangeListener<Number> {
                 statusLabel.setText("Воспроизведение: " + title);
             }
         } else {
-            System.out.println("mediaPlayer не инициализирован");
+            java.lang.System.out.println("mediaPlayer не инициализирован");
         }
     }
 
@@ -179,7 +179,7 @@ public class SystemMusic implements ChangeListener<Number> {
         }
     }
 
-    private void stopCurrentTrack() {
+    void stopCurrentTrack() {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
             mediaPlayer.dispose();
