@@ -2,7 +2,6 @@ package org.example.demo1;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -24,7 +23,6 @@ public class SystemMusic implements ChangeListener<Number> {
     private String author, title;
     private IDB dataBase = DataBase.getInstance();
     private MediaPlayer mediaPlayer;
-    private boolean isPlaying = false, isStart = false, isTrackPlayed = true;
     private Thread thread;
     private double countUser = 0, volume = 10;
     private Slider slider;
@@ -41,6 +39,7 @@ public class SystemMusic implements ChangeListener<Number> {
     public void setThread(Thread thread) {
         this.thread = thread;
     }
+
     public void setStatusLabel(Label statusLabel) {
         this.statusLabel = statusLabel;
     }
@@ -52,8 +51,6 @@ public class SystemMusic implements ChangeListener<Number> {
     public String getTitle() {
         return title;
     }
-
-
 
     public void addMusic(Label statusLabel, ListView<String> fileListView, String author, String title) {
         FileChooser fileChooser = new FileChooser();
@@ -114,7 +111,6 @@ public class SystemMusic implements ChangeListener<Number> {
         }
     }
 
-
     @Override
     public void changed(ObservableValue<? extends Number> observableValue, Number number, Number currentSec) {
 
@@ -124,15 +120,20 @@ public class SystemMusic implements ChangeListener<Number> {
             if (countUser + 2 < countSlider || countUser - 2 > countSlider) {
                 countUser = countSlider;
                 mediaPlayer.seek(Duration.seconds(currentSec.doubleValue()));
+
+
+                if (thread == null) {
+                    thread = new Thread(slider);
+                    thread.start();
+                }
                 thread.setCount(currentSec.intValue());
+
                 statusLabel.setText("Воспроизведение: " + title);
             }
         } else {
             System.out.println("mediaPlayer не инициализирован");
         }
     }
-
-
 
     void playSelectedFile(String selectedFileName, ImageView playIcon, Label statusLabel, Slider slider) {
         if (selectedFileName != null) {
@@ -141,6 +142,7 @@ public class SystemMusic implements ChangeListener<Number> {
             title = separationAuthorName[1].trim();
 
             stopCurrentTrack();
+
             int musicId = dataBase.getMusicIdByName(title);
             File musicFile = dataBase.getMusicFromDatabase(musicId);
 
@@ -148,7 +150,6 @@ public class SystemMusic implements ChangeListener<Number> {
                 Media media = new Media(musicFile.toURI().toString());
                 mediaPlayer = new MediaPlayer(media);
                 setMediaPlayer(mediaPlayer);
-
 
                 mediaPlayer.setOnReady(() -> {
                     mediaPlayer.play();
@@ -161,8 +162,6 @@ public class SystemMusic implements ChangeListener<Number> {
                         thread = new Thread(slider);
                         thread.start();
                     }
-
-                    isPlaying = true;
                 });
 
                 mediaPlayer.setOnEndOfMedia(() -> {
@@ -171,7 +170,6 @@ public class SystemMusic implements ChangeListener<Number> {
                     playIcon.setImage(new Image(getClass().getResourceAsStream("Img/play-button.png")));
                     slider.setValue(0);
                     stopCurrentThread();
-                    isPlaying = false;
                 });
 
                 mediaPlayer.setOnError(() -> {
@@ -180,11 +178,6 @@ public class SystemMusic implements ChangeListener<Number> {
             }
         }
     }
-
-
-
-
-
 
     private void stopCurrentTrack() {
         if (mediaPlayer != null) {
@@ -197,10 +190,8 @@ public class SystemMusic implements ChangeListener<Number> {
 
     private void stopCurrentThread() {
         if (thread != null) {
-            thread.setStop(false);
             thread.interrupt();
             thread = null;
         }
     }
-
 }

@@ -1,22 +1,14 @@
 package org.example.demo1;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import javafx.util.Duration;
+import javafx.scene.control.ScrollBar;
 import org.example.demo1.DataBase.DataBase;
 import org.example.demo1.Interface.IDB;
 import org.example.demo1.Treads.Thread;
-import java.io.File;
-
-
 
 public class HelloController {
     @FXML
@@ -31,22 +23,20 @@ public class HelloController {
     private ImageView playIcon, startIcon;
     @FXML
     private ScrollBar scrollbarVolume;
-    private MediaPlayer mediaPlayer;
     private IDB dataBase = DataBase.getInstance();
     private DataBase dataBaseLoad = DataBase.getInstance();
     private String author, title;
-    private boolean isPlaying = false, isStart = false, isTrackPlayed = true;
+    private boolean isStart = false, isStop = true;
     private Thread thread;
-    private double countUser = 0, volume = 10;
-    private SystemMusic  systemMusic = new SystemMusic();
-
+    private double countUser = 0, volume = 0;
+    private SystemMusic systemMusic = new SystemMusic();
 
     public void initialize() {
         fileListView.setCellFactory(listView -> new MusicCell(fileListView));
         systemMusic.setSlider(slider);
-        systemMusic.setMediaPlayer(mediaPlayer);
         systemMusic.setThread(thread);
         systemMusic.setStatusLabel(statusLabel);
+
     }
 
     public void start() {
@@ -55,13 +45,13 @@ public class HelloController {
             slider.valueProperty().addListener(systemMusic);
             slider.valueProperty().setValue(0);
             countUser = 0;
-            isPlaying = true;
             thread = new Thread(slider);
             systemMusic.playSelectedFile(selectedFile, playIcon, statusLabel, slider);
-            isStart  = true;
+            isStart = true;
         } else {
             statusLabel.setText("Список треков пуст.");
         }
+
         if (isStart) {
             startIcon.setImage(new Image(getClass().getResourceAsStream("Img/play_start.png")));
             startButton.setDisable(true);
@@ -69,13 +59,9 @@ public class HelloController {
         }
     }
 
-    public void addMusic(){
+    public void addMusic() {
         systemMusic.addMusic(statusLabel, fileListView, author, title);
     }
-
-
-
-
 
     public void playButtonFunc() {
         MediaPlayer mediaPlayer = systemMusic.getMediaPlayer();
@@ -85,24 +71,22 @@ public class HelloController {
             return;
         }
         if (mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
-            thread.setStop(false);
-            mediaPlayer.pause();
+            isStop = false;
             thread.interrupt();
+            thread = new Thread(slider, (int) countUser, isStop);
+            thread.start();
+
+            mediaPlayer.pause();
             playIcon.setImage(new Image(getClass().getResourceAsStream("Img/play-button.png")));
             statusLabel.setText("Пауза: " + title);
-
         } else {
-            playIcon.setImage(new Image(getClass().getResourceAsStream("Img/pause_button.png")));
-            isPlaying = true;
-            thread.setStop(true);
+            isStop = true;
             mediaPlayer.play();
-            if (thread == null) {
-                thread = new Thread(slider, (int) countUser);
-                thread.start();
-            }
+            playIcon.setImage(new Image(getClass().getResourceAsStream("Img/pause_button.png")));
             statusLabel.setText("Воспроизведение: " + title);
         }
     }
+
 
 
     public void sliderClick() {
@@ -117,10 +101,15 @@ public class HelloController {
         System.out.println("playPreviousTrack");
         try {
             int currentIndex = fileListView.getSelectionModel().getSelectedIndex();
+            thread.interrupt();
+            thread = new Thread(slider, (int) countUser, isStop);
+            thread.start();
             if (currentIndex < fileListView.getItems().size() + 1) {
                 fileListView.getSelectionModel().select(currentIndex - 1);
                 dataBaseLoad.setMusicId(currentIndex - 1);
                 systemMusic.playSelectedFile(fileListView.getItems().get(currentIndex - 1), playIcon, statusLabel, slider);
+                MediaPlayer mediaPlayer = systemMusic.getMediaPlayer();
+                mediaPlayer.setVolume(volume);
             } else {
                 statusLabel.setText("Достигнут конец списка треков.");
             }
@@ -134,10 +123,15 @@ public class HelloController {
     private void playNextTrack() {
         System.out.println("playNextTrack");
         int currentIndex = fileListView.getSelectionModel().getSelectedIndex();
+        thread.interrupt();
+        thread = new Thread(slider, (int) countUser, isStop);
+        thread.start();
         if (currentIndex < fileListView.getItems().size() - 1) {
             fileListView.getSelectionModel().select(currentIndex + 1);
             dataBaseLoad.setMusicId(currentIndex + 1);
             systemMusic.playSelectedFile(fileListView.getItems().get(currentIndex + 1), playIcon, statusLabel, slider);
+            MediaPlayer mediaPlayer = systemMusic.getMediaPlayer();
+            mediaPlayer.setVolume(volume);
         } else {
             statusLabel.setText("Достигнут конец списка треков.");
         }
@@ -150,6 +144,7 @@ public class HelloController {
             mediaPlayer.setVolume(volume);
         }
         System.out.println("volume: " + volume);
+
     }
 
 
