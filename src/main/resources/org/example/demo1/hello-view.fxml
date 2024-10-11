@@ -12,7 +12,7 @@
                 <Slider id="slider" fx:id="slider" layoutX="54.0" layoutY="7.0"  prefHeight="14.0" prefWidth="510.0" styleClass="slider" AnchorPane.bottomAnchor="35.0" />
                 <ImageView fx:id="playIcon" fitHeight="20.0" fitWidth="20.0" layoutX="290.0" layoutY="27.0" styleClass="playIcon">
                     <image>
-                        <Image url="@Img/play-button.png" />
+                        <Image url="@Img/play_button.png" />
                     </image>
                 </ImageView>
                 <Button fx:id="playButton" layoutX="289.0" layoutY="17.0" onAction="#playButtonFunc" prefHeight="20.0" prefWidth="20.0" styleClass="button" />

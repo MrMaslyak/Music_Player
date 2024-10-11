@@ -15,7 +15,6 @@ import org.example.demo1.database.repository.IDB;
 import org.example.demo1.treads.Thread;
 
 import java.io.File;
-import java.util.Objects;
 
 public class System implements ChangeListener<Number> {
 
@@ -173,7 +172,7 @@ public class System implements ChangeListener<Number> {
                 mediaPlayer.setOnEndOfMedia(() -> {
                     mediaPlayer.seek(Duration.ZERO);
                     statusLabel.setText("Воспроизведение завершено: " + selectedFileName);
-                    playIcon.setImage(new Image(getClass().getResourceAsStream("/org/example/demo1/Img/play-button.png")));
+                    playIcon.setImage(new Image(getClass().getResourceAsStream("/org/example/demo1/Img/play_button.png")));
                     slider.setValue(0);
                     stopCurrentThread();
                 });

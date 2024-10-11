@@ -11,8 +11,6 @@ import org.example.demo1.database.DataBase;
 import org.example.demo1.services.System;
 import org.example.demo1.treads.Thread;
 
-import java.io.InputStream;
-
 
 public class Panel {
 
@@ -45,17 +43,21 @@ public class Panel {
             return;
         }
         if (mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
-            isStop = false;
+
+            thread.disable();
             thread.interrupt();
             thread = new Thread(slider, (int) countUser, isStop);
             thread.start();
-
             mediaPlayer.pause();
-            playIcon.setImage(new Image(getClass().getResourceAsStream("/org/example/demo1/Img/play-button.png")));
+
+            playIcon.setImage(new Image(getClass().getResourceAsStream("/org/example/demo1/Img/play_button.png")));
 
             statusLabel.setText("Пауза: " + title);
         } else {
-            isStop = true;
+            thread.enable();
+            thread.interrupt();
+            thread = new Thread(slider, (int) countUser, isStop);
+            thread.start();
             mediaPlayer.play();
             playIcon.setImage(new Image(getClass().getResourceAsStream("/org/example/demo1/Img/pause_button.png")));
             statusLabel.setText("Воспроизведение: " + title);

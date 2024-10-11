@@ -41,8 +41,8 @@ public class Controller {
         fileListView.setCellFactory(listView -> new MusicCell(fileListView));
         system = new System();
         panel = new Panel(fileListView, slider, playIcon,
-                     scrollbarVolume, dataBaseLoad, isStart,
-                     countUser, volume);
+                scrollbarVolume, dataBaseLoad, isStart,
+                countUser, volume);
         system.setSlider(slider);
         system.setThread(thread);
         system.setStatusLabel(statusLabel);
@@ -78,17 +78,19 @@ public class Controller {
         panel.playButtonFunc(thread, system, statusLabel);
     }
 
-  public void playNextTrack (){
+    public void playNextTrack() {
         panel.playNextTrack(thread, system, statusLabel);
     }
 
-    public void playPreviousTrack (){
+    public void playPreviousTrack() {
         panel.playPreviousTrack(thread, system, statusLabel);
     }
 
-    public void scrollbarVolume(){
+    public void scrollbarVolume() {
         panel.scrollbarVolume(system);
     }
+
+
 }
 
 

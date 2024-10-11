@@ -3,9 +3,11 @@ package org.example.demo1;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.example.demo1.database.DataBase;
 import org.example.demo1.database.repository.IDB;
 
+import java.awt.*;
 import java.io.IOException;
 
 public class Application extends javafx.application.Application {
@@ -16,6 +18,8 @@ public class Application extends javafx.application.Application {
         Scene scene = new Scene(fxmlLoader.load(), 600, 750);
         stage.setTitle("Music Player");
         stage.setScene(scene);
+        stage.setResizable(false);
+        stage.initStyle(StageStyle.UTILITY);
         stage.show();
         IDB dataBase = DataBase.getInstance();
 

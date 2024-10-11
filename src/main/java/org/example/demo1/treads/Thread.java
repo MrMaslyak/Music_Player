@@ -6,7 +6,7 @@ import javafx.scene.control.Slider;
 public class Thread extends java.lang.Thread {
     private Slider slider;
     private int count = 0;
-    private boolean isStop;
+    private boolean isStop = false;
 
 
     public Thread(Slider slider ) {
@@ -24,6 +24,7 @@ public class Thread extends java.lang.Thread {
         while (isStop) {
             try {
                 Platform.runLater(() -> slider.setValue(count++));
+                System.out.println("isStop: " + isStop);
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 java.lang.System.out.println("Thread interrupted.");
@@ -41,5 +42,11 @@ public class Thread extends java.lang.Thread {
         this.count = count;
     }
 
+  public void disable () {
+      isStop = false;
+  }
 
+  public void enable () {
+      isStop = true;
+  }
 }
