@@ -30,7 +30,7 @@ public class Controller {
     private IDB dataBase = DataBase.getInstance();
     private DataBase dataBaseLoad = DataBase.getInstance();
     private String author, title;
-    private boolean isStart = false, isStop = true;
+    private boolean isStart = false, isStop;
     private Thread thread;
     private double countUser = 0, volume = 0;
     private System system;
@@ -44,7 +44,6 @@ public class Controller {
                 scrollbarVolume, dataBaseLoad, isStart,
                 countUser, volume);
         system.setSlider(slider);
-        system.setThread(thread);
         system.setStatusLabel(statusLabel);
 
     }
@@ -55,20 +54,23 @@ public class Controller {
             slider.valueProperty().addListener(system);
             slider.valueProperty().setValue(0);
             countUser = 0;
-            thread = new Thread(slider);
             system.playSelectedFile(selectedFile, playIcon, statusLabel, slider);
             isStart = true;
+
+            if (isStart) {
+                startIcon.setImage(new Image(getClass().getResourceAsStream("/org/example/demo1/Img/play_start.png")));
+                startButton.setDisable(true);
+                if (thread == null || !thread.isAlive()) {
+                    thread = new Thread(slider);
+                    thread.start();
+                }
+                playButtonFunc();
+            }
         } else {
             statusLabel.setText("Список треков пуст.");
         }
-
-        if (isStart) {
-            startIcon.setImage(new Image(getClass().getResourceAsStream("/org/example/demo1/Img/play_start.png")));
-
-            startButton.setDisable(true);
-            playButtonFunc();
-        }
     }
+
 
     public void addMusic() {
         system.addMusic(statusLabel, fileListView, author, title);

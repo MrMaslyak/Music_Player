@@ -38,26 +38,27 @@ public class Panel {
     public void playButtonFunc(Thread thread, System system, Label statusLabel) {
         MediaPlayer mediaPlayer = system.getMediaPlayer();
         String title = system.getTitle();
+
         if (mediaPlayer == null) {
             statusLabel.setText("Ошибка: Плеер не инициализирован.");
             return;
         }
+
         if (mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
 
             thread.disable();
-            thread.interrupt();
-            thread = new Thread(slider, (int) countUser, isStop);
-            thread.start();
             mediaPlayer.pause();
-
             playIcon.setImage(new Image(getClass().getResourceAsStream("/org/example/demo1/Img/play_button.png")));
-
             statusLabel.setText("Пауза: " + title);
         } else {
-            thread.enable();
-            thread.interrupt();
-            thread = new Thread(slider, (int) countUser, isStop);
-            thread.start();
+
+            if (thread.isAlive()) {
+                thread.enable();
+            } else {
+                thread = new Thread(slider);
+                thread.setCount((int) slider.getValue());
+                thread.start();
+            }
             mediaPlayer.play();
             playIcon.setImage(new Image(getClass().getResourceAsStream("/org/example/demo1/Img/pause_button.png")));
             statusLabel.setText("Воспроизведение: " + title);
@@ -65,13 +66,17 @@ public class Panel {
     }
 
 
+
+
+
+
+
+
     public void playNextTrack(Thread thread, System system, Label statusLabel) {
         try {
             int currentIndex = fileListView.getSelectionModel().getSelectedIndex();
 
-            if (thread != null && thread.isAlive()) {
-                thread.interrupt();
-            }
+
             system.stopCurrentTrack();
 
             if (currentIndex < fileListView.getItems().size() - 1) {
@@ -79,8 +84,7 @@ public class Panel {
                 dataBaseLoad.setMusicId(currentIndex + 1);
                 system.playSelectedFile(fileListView.getItems().get(currentIndex + 1), playIcon, statusLabel, slider);
 
-                thread = new Thread(slider);
-                thread.start();
+
                 MediaPlayer mediaPlayer = system.getMediaPlayer();
                 mediaPlayer.setVolume(volume);
                 slider.setValue(0);
@@ -100,9 +104,7 @@ public class Panel {
         try {
             int currentIndex = fileListView.getSelectionModel().getSelectedIndex();
 
-            if (thread != null && thread.isAlive()) {
-                thread.interrupt();
-            }
+
             system.stopCurrentTrack();
 
             if (currentIndex > 0) {
@@ -110,8 +112,7 @@ public class Panel {
                 dataBaseLoad.setMusicId(currentIndex - 1);
                 system.playSelectedFile(fileListView.getItems().get(currentIndex - 1), playIcon, statusLabel, slider);
 
-                thread = new Thread(slider);
-                thread.start();
+
                 MediaPlayer mediaPlayer = system.getMediaPlayer();
                 mediaPlayer.setVolume(volume);
                 slider.setValue(0);

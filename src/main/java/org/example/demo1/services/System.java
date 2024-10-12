@@ -36,9 +36,6 @@ public class System implements ChangeListener<Number> {
         this.mediaPlayer = mediaPlayer;
     }
 
-    public void setThread(Thread thread) {
-        this.thread = thread;
-    }
 
     public void setStatusLabel(Label statusLabel) {
         this.statusLabel = statusLabel;
@@ -111,6 +108,7 @@ public class System implements ChangeListener<Number> {
         }
     }
 
+
     @Override
     public void changed(ObservableValue<? extends Number> observableValue, Number number, Number currentSec) {
 
@@ -120,15 +118,8 @@ public class System implements ChangeListener<Number> {
             if (countUser + 2 < countSlider || countUser - 2 > countSlider) {
                 countUser = countSlider;
                 mediaPlayer.seek(Duration.seconds(currentSec.doubleValue()));
-
-
-                if (thread == null) {
-                    thread = new Thread(slider);
-                    thread.start();
-                }
-                thread.setCount(currentSec.intValue());
-
                 statusLabel.setText("Воспроизведение: " + title);
+
             }
         } else {
             java.lang.System.out.println("mediaPlayer не инициализирован");
@@ -163,10 +154,7 @@ public class System implements ChangeListener<Number> {
                     slider.setMin(0);
                     slider.setMax(mediaPlayer.getMedia().getDuration().toSeconds());
 
-                    if (thread == null) {
-                        thread = new Thread(slider);
-                        thread.start();
-                    }
+
                 });
 
                 mediaPlayer.setOnEndOfMedia(() -> {
